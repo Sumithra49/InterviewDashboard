@@ -1,20 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import InterviewRequest from './models/InterviewRequest.js';
 
 dotenv.config();
 
 const app = express();
-const server = createServer(app);
 
-app.use(cors());
+// ✅ Middleware
+app.use(cors()); // Allows all origins (or customize here if needed)
 app.use(express.json());
-
-
 
 // ✅ MongoDB Connection
 const connectDB = async () => {
@@ -30,24 +26,6 @@ const connectDB = async () => {
   }
 };
 connectDB();
-
-// ✅ Socket.IO setup with CORS
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT'],
-    credentials: true
-  }
-});
-
-// ✅ Socket.IO connection handling
-io.on('connection', (socket) => {
-  console.log('👤 User connected:', socket.id);
-  
-  socket.on('disconnect', () => {
-    console.log('👋 User disconnected:', socket.id);
-  });
-});
 
 // ✅ API Routes
 
@@ -66,16 +44,13 @@ app.get('/api/interview-requests', async (req, res) => {
 app.post('/api/interview-requests', async (req, res) => {
   try {
     const { name, email, jobTitle } = req.body;
-    
+
     if (!name || !email || !jobTitle) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     const newRequest = new InterviewRequest({ name, email, jobTitle });
     const savedRequest = await newRequest.save();
-
-    // Emit the new request to all connected clients
-    io.emit('newInterviewRequest', savedRequest);
 
     res.status(201).json(savedRequest);
   } catch (error) {
@@ -99,9 +74,6 @@ app.put('/api/interview-requests/:id/accept', async (req, res) => {
       return res.status(404).json({ error: 'Interview request not found' });
     }
 
-    // Emit the updated request to all connected clients
-    io.emit('requestStatusUpdated', updatedRequest);
-
     res.json(updatedRequest);
   } catch (error) {
     console.error('Error accepting request:', error);
@@ -109,13 +81,13 @@ app.put('/api/interview-requests/:id/accept', async (req, res) => {
   }
 });
 
-// Health check route
+// ✅ Health Check
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// ✅ Start server
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
