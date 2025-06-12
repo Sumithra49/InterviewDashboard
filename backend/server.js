@@ -11,20 +11,10 @@ dotenv.config();
 const app = express();
 const server = createServer(app);
 
-// ✅ Allow both local and deployed frontend URLs
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://interview-dashboard-two.vercel.app'
-];
-
-// ✅ CORS for Express
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
-
-// ✅ Middleware
+app.use(cors());
 app.use(express.json());
+
+
 
 // ✅ MongoDB Connection
 const connectDB = async () => {
