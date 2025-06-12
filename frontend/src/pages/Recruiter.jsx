@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Clock, CheckCircle } from 'lucide-react';
+import { io } from 'socket.io-client';
+
+const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 const Recruiter = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [processingIds, setProcessingIds] = useState(new Set());
-
-  useEffect(() => {
-    fetchRequests();
-    const intervalId = setInterval(fetchRequests, 15000);
-    return () => clearInterval(intervalId);
-  }, []);
+  const socketRef = useRef(null);
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('https://interviewdashboard-4.onrender.com/api/interview-requests');
+      const response = await fetch(`${SOCKET_SERVER_URL}/api/interview-requests`);
       const data = await response.json();
       setRequests(data);
     } catch (error) {
@@ -26,21 +24,16 @@ const Recruiter = () => {
   };
 
   const handleAccept = async (id) => {
-    setProcessingIds(prev => new Set(prev).add(id));
+    setProcessingIds((prev) => new Set(prev).add(id));
     try {
-      const response = await fetch(`https://interviewdashboard-4.onrender.com/api/interview-requests/${id}/accept`, {
+      const response = await fetch(`${SOCKET_SERVER_URL}/api/interview-requests/${id}/accept`, {
         method: 'PUT',
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to accept request');
-      }
-
-      fetchRequests();
+      if (!response.ok) throw new Error('Failed to accept request');
     } catch (error) {
       console.error('Error accepting request:', error);
     } finally {
-      setProcessingIds(prev => {
+      setProcessingIds((prev) => {
         const newSet = new Set(prev);
         newSet.delete(id);
         return newSet;
@@ -48,21 +41,14 @@ const Recruiter = () => {
     }
   };
 
-  const filteredRequests = requests.filter(request => {
-    if (filter === 'pending') return request.status === 'pending';
-    if (filter === 'accepted') return request.status === 'accepted';
-    return true;
-  });
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
-  };
 
   const getStatusBadge = (status) => {
     if (status === 'accepted') {
@@ -81,6 +67,52 @@ const Recruiter = () => {
     );
   };
 
+  useEffect(() => {
+    fetchRequests();
+    const intervalId = setInterval(fetchRequests, 15000);
+
+    const socket = io(SOCKET_SERVER_URL, {
+      transports: ['websocket'],
+      reconnectionAttempts: 5,
+    });
+
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      console.log('✅ Connected to socket server:', socket.id);
+    });
+
+    socket.on('newInterviewRequest', (newRequest) => {
+      console.log('📩 New interview request received:', newRequest);
+      setRequests((prev) => [newRequest, ...prev]);
+    });
+
+    socket.on('requestStatusUpdated', (updatedRequest) => {
+      console.log('🔁 Request status updated:', updatedRequest);
+      setRequests((prev) =>
+        prev.map((r) => (r._id === updatedRequest._id ? updatedRequest : r))
+      );
+    });
+
+    return () => {
+      clearInterval(intervalId);
+      if (socket) {
+        socket.off('connect');
+        socket.off('newInterviewRequest');
+        socket.off('requestStatusUpdated');
+        if (socket.connected || socket.connecting) {
+          socket.disconnect();
+        }
+      }
+    };
+  }, []);
+
+  const filteredRequests = requests.filter((req) => {
+    if (filter === 'pending') return req.status === 'pending';
+    if (filter === 'accepted') return req.status === 'accepted';
+    return true;
+  });
+
   if (loading) {
     return (
       <div className="container mx-auto px-6 py-20">
@@ -95,9 +127,8 @@ const Recruiter = () => {
     <div className="container mx-auto px-6 py-20">
       <h1 className="text-2xl font-bold mb-6 text-center">Interview Requests</h1>
 
-      {/* Filter Buttons */}
       <div className="flex justify-center gap-4 mb-6">
-        {['all', 'pending', 'accepted'].map(type => (
+        {['all', 'pending', 'accepted'].map((type) => (
           <button
             key={type}
             onClick={() => setFilter(type)}
@@ -112,7 +143,6 @@ const Recruiter = () => {
         ))}
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 shadow-sm border border-gray-200 rounded-md">
           <thead className="bg-gray-100">
@@ -157,7 +187,6 @@ const Recruiter = () => {
         </table>
       </div>
 
-      {/* Auto-refresh status */}
       <div className="mt-8 text-center">
         <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
           <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>

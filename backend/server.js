@@ -3,13 +3,22 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import InterviewRequest from './models/InterviewRequest.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app); 
+const io = new Server(server, {
+  cors: {
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT'],
+  },
+});
 
 // ✅ Middleware
-app.use(cors()); // Allows all origins (or customize here if needed)
+app.use(cors());
 app.use(express.json());
 
 // ✅ MongoDB Connection
@@ -27,9 +36,18 @@ const connectDB = async () => {
 };
 connectDB();
 
+// ✅ Socket.IO Events
+io.on('connection', (socket) => {
+  console.log('📡 Recruiter connected:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('❌ Recruiter disconnected:', socket.id);
+  });
+});
+
 // ✅ API Routes
 
-// GET /api/interview-requests - Fetch all interview requests
+// GET /api/interview-requests
 app.get('/api/interview-requests', async (req, res) => {
   try {
     const requests = await InterviewRequest.find().sort({ createdAt: -1 });
@@ -40,7 +58,7 @@ app.get('/api/interview-requests', async (req, res) => {
   }
 });
 
-// POST /api/interview-requests - Submit new interview request
+// POST /api/interview-requests
 app.post('/api/interview-requests', async (req, res) => {
   try {
     const { name, email, jobTitle } = req.body;
@@ -52,6 +70,9 @@ app.post('/api/interview-requests', async (req, res) => {
     const newRequest = new InterviewRequest({ name, email, jobTitle });
     const savedRequest = await newRequest.save();
 
+    // Emit event to all recruiters
+    io.emit('newInterviewRequest', savedRequest);
+
     res.status(201).json(savedRequest);
   } catch (error) {
     console.error('Error creating request:', error);
@@ -59,7 +80,7 @@ app.post('/api/interview-requests', async (req, res) => {
   }
 });
 
-// PUT /api/interview-requests/:id/accept - Mark request as accepted
+// PUT /api/interview-requests/:id/accept
 app.put('/api/interview-requests/:id/accept', async (req, res) => {
   try {
     const { id } = req.params;
@@ -73,6 +94,9 @@ app.put('/api/interview-requests/:id/accept', async (req, res) => {
     if (!updatedRequest) {
       return res.status(404).json({ error: 'Interview request not found' });
     }
+
+    // Emit event to update request status
+    io.emit('requestStatusUpdated', updatedRequest);
 
     res.json(updatedRequest);
   } catch (error) {
@@ -88,6 +112,6 @@ app.get('/health', (req, res) => {
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
