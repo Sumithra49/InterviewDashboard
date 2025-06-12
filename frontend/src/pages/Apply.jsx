@@ -47,7 +47,7 @@ const Apply = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/interview-requests', {
+      const response = await fetch('https://interviewdashboard.onrender.com/api/interview-requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

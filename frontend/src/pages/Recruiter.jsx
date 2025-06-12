@@ -5,19 +5,18 @@ import io from 'socket.io-client';
 const Recruiter = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // 'all', 'pending', 'accepted'
+  const [filter, setFilter] = useState('all'); 
   const [socket, setSocket] = useState(null);
   const [processingIds, setProcessingIds] = useState(new Set());
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io('https://interviewdashboard.onrender.com');
     setSocket(newSocket);
 
     // Fetch initial data
     fetchRequests();
 
-    // Listen for real-time updates
     newSocket.on('newInterviewRequest', (newRequest) => {
       setRequests(prev => [newRequest, ...prev]);
       // Show notification effect
@@ -64,7 +63,7 @@ const Recruiter = () => {
     setProcessingIds(prev => new Set(prev).add(id));
     
     try {
-      const response = await fetch(`http://localhost:5000/api/interview-requests/${id}/accept`, {
+      const response = await fetch(`https://interviewdashboard.onrender.com/api/interview-requests/${id}/accept`, {
         method: 'PUT',
       });
 
