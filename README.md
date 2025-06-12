@@ -3,8 +3,8 @@
 A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and  for seamless communication between applicants and recruiters.
  # Deployment link:
 
- - Frontend:https://interview-dashboard-txf1.vercel.app/
- - Backend:https://interviewdashboard-4.onrender.com
+ - Frontend:https://interview-dashboard-ez5x.vercel.app/
+ - Backend:https://interviewdashboard-5.onrender.com
 
  - # Folder structure
  - ![image](https://github.com/user-attachments/assets/3aa4bf49-edcd-4a91-b863-f8a6ce80da08)
