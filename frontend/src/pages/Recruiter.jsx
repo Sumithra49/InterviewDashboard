@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Clock, CheckCircle } from 'lucide-react';
 import { io } from 'socket.io-client';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
-
+const SOCKET_SERVER_URL = 'https://interviewdashboard-5.onrender.com'
 const Recruiter = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
