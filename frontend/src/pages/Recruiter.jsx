@@ -18,7 +18,7 @@ const Recruiter = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('https://interviewdashboard-1.onrender.com/api/interview-requests');
+      const response = await fetch('https://interviewdashboard-4.onrender.com/api/interview-requests');
       const data = await response.json();
       setRequests(data);
     } catch (error) {
@@ -32,7 +32,7 @@ const Recruiter = () => {
     setProcessingIds(prev => new Set(prev).add(id));
     
     try {
-      const response = await fetch(`https://interviewdashboard-1.onrender.com/api/interview-requests/${id}/accept`, {
+      const response = await fetch(`https://interviewdashboard-4.onrender.com/api/interview-requests/${id}/accept`, {
         method: 'PUT',
       });
 
