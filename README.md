@@ -152,22 +152,22 @@ The application will be available at:
 }
 ```
 
-## 🔄 Real-time Features
+## 🔄 Near Real-Time Features
+- The platform uses 15-second polling to keep interview requests up-to-date:
 
-The platform uses **Socket.IO** for real-time communication:
+- Mechanism
+- The frontend polls the backend every 15 seconds
 
-### Events
-- `newInterviewRequest` - Emitted when a new application is submitted
-- `requestStatusUpdated` - Emitted when a request status changes
-- `connection` - User connects to the platform
-- `disconnect` - User disconnects from the platform
+- New interview requests and status updates are fetched regularly
 
-### How it Works
-1. Applicant submits form on `/apply`
-2. Backend saves to MongoDB and emits `newInterviewRequest`
-3. All connected recruiters receive the update instantly
-4. Recruiter accepts request, backend emits `requestStatusUpdated`
-5. All clients see the status change in real-time
+- How it Works
+- Applicant submits a form on /apply
+
+- Backend saves the request to MongoDB
+
+- Recruiter dashboard polls the server every 15s to fetch updates
+
+- Recruiters see the new request or updated status automatically (within 15s)
 
 ## 🎨 Design Features
 
