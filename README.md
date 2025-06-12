@@ -1,10 +1,14 @@
 # JobConnect - Real-time Interview Platform
 
-A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and Socket.IO for seamless communication between applicants and recruiters.
+A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and  for seamless communication between applicants and recruiters.
  # Deployment link:
 
- - Frontend:https://interview-dashboard-hwvn.vercel.app/
- - Backend:https://interviewdashboard-1.onrender.com
+ - Frontend:https://interview-dashboard-txf1.vercel.app/
+ - Backend:https://interviewdashboard-4.onrender.com
+
+ - # Folder structure
+ - ![image](https://github.com/user-attachments/assets/3aa4bf49-edcd-4a91-b863-f8a6ce80da08)
+
 
 ## 🚀 Features
 
@@ -26,7 +30,7 @@ A modern job platform that enables instant interview requests with real-time not
 ### Frontend
 - **React 18** - Modern React with hooks
 - **React Router** - Client-side routing
-- **Socket.IO Client** - Real-time communication
+
 - **Tailwind CSS** - Utility-first styling
 - **Lucide React** - Beautiful icons
 - **Vite** - Fast development server
@@ -34,7 +38,7 @@ A modern job platform that enables instant interview requests with real-time not
 ### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
-- **Socket.IO** - Real-time bidirectional communication
+
 - **MongoDB** - NoSQL database
 - **Mongoose** - MongoDB object modeling
 - **CORS** - Cross-origin resource sharing
@@ -148,22 +152,22 @@ The application will be available at:
 }
 ```
 
-## 🔄 Real-time Features
+## 🔄 Near Real-Time Features
+- The platform uses 15-second polling to keep interview requests up-to-date:
 
-The platform uses **Socket.IO** for real-time communication:
+- Mechanism
+- The frontend polls the backend every 15 seconds
 
-### Events
-- `newInterviewRequest` - Emitted when a new application is submitted
-- `requestStatusUpdated` - Emitted when a request status changes
-- `connection` - User connects to the platform
-- `disconnect` - User disconnects from the platform
+- New interview requests and status updates are fetched regularly
 
-### How it Works
-1. Applicant submits form on `/apply`
-2. Backend saves to MongoDB and emits `newInterviewRequest`
-3. All connected recruiters receive the update instantly
-4. Recruiter accepts request, backend emits `requestStatusUpdated`
-5. All clients see the status change in real-time
+- How it Works
+- Applicant submits a form on /apply
+
+- Backend saves the request to MongoDB
+
+- Recruiter dashboard polls the server every 15s to fetch updates
+
+- Recruiters see the new request or updated status automatically (within 15s)
 
 ## 🎨 Design Features
 
@@ -259,11 +263,16 @@ VITE_API_URL=https://your-backend-url.com
 # Message after submit the Interview Request
 ![image](https://github.com/user-attachments/assets/17a70e83-ba94-4fe4-b045-e91c3bb1a964)
 # Recruiter page
-![image](https://github.com/user-attachments/assets/370a11c9-3999-4f16-8f46-1fccd0fdbe3f)
-![image](https://github.com/user-attachments/assets/48bedecd-e883-4e7e-9bd4-b7c530d1ab77)
+![image](https://github.com/user-attachments/assets/a801872f-96ed-490e-8c14-c830ee7c2079)
+
 
 # Filtering  request
-![image](https://github.com/user-attachments/assets/d571b937-40e8-4b94-85c2-a7125ed2df10)
+![image](https://github.com/user-attachments/assets/392022ce-3acd-493a-ac07-6d4226263f6e)
+
+# Notification
+![image](https://github.com/user-attachments/assets/a52fbf67-43f2-49c5-ad4a-e72579a4f174)
+
+
 
 
 
