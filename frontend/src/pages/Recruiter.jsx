@@ -11,7 +11,7 @@ const Recruiter = () => {
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io('https://interviewdashboard.onrender.com');
+    const newSocket = io('https://interviewdashboard-1.onrender.com');
     setSocket(newSocket);
 
     // Fetch initial data
@@ -38,7 +38,7 @@ const Recruiter = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/interview-requests');
+      const response = await fetch('https://interviewdashboard-1.onrender.com/api/interview-requests');
       const data = await response.json();
       setRequests(data);
     } catch (error) {
@@ -63,7 +63,7 @@ const Recruiter = () => {
     setProcessingIds(prev => new Set(prev).add(id));
     
     try {
-      const response = await fetch(`https://interviewdashboard.onrender.com/api/interview-requests/${id}/accept`, {
+      const response = await fetch(`https://interviewdashboard-1.onrender.com/api/interview-requests/${id}/accept`, {
         method: 'PUT',
       });
 
