@@ -10,8 +10,11 @@ const Recruiter = () => {
   const [processingIds, setProcessingIds] = useState(new Set());
 
   useEffect(() => {
-    // Initialize socket connection
-    const newSocket = io('https://interviewdashboard-1.onrender.com');
+  const newSocket = io('https://interviewdashboard-1.onrender.com', {
+  transports: ['websocket'], // Force WebSocket
+  withCredentials: true
+});
+
     setSocket(newSocket);
 
     // Fetch initial data
