@@ -3,8 +3,12 @@
 A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and Socket.IO for seamless communication between applicants and recruiters.
  # Deployment link:
 
- - Frontend:https://interview-dashboard-hwvn.vercel.app/
- - Backend:https://interviewdashboard-1.onrender.com
+ - Frontend:https://interview-dashboard-txf1.vercel.app/
+ - Backend:https://interviewdashboard-4.onrender.com
+
+ - # Folder structure
+ - ![image](https://github.com/user-attachments/assets/3aa4bf49-edcd-4a91-b863-f8a6ce80da08)
+
 
 ## 🚀 Features
 
@@ -259,11 +263,12 @@ VITE_API_URL=https://your-backend-url.com
 # Message after submit the Interview Request
 ![image](https://github.com/user-attachments/assets/17a70e83-ba94-4fe4-b045-e91c3bb1a964)
 # Recruiter page
-![image](https://github.com/user-attachments/assets/370a11c9-3999-4f16-8f46-1fccd0fdbe3f)
-![image](https://github.com/user-attachments/assets/48bedecd-e883-4e7e-9bd4-b7c530d1ab77)
+![image](https://github.com/user-attachments/assets/a801872f-96ed-490e-8c14-c830ee7c2079)
+
 
 # Filtering  request
-![image](https://github.com/user-attachments/assets/d571b937-40e8-4b94-85c2-a7125ed2df10)
+![image](https://github.com/user-attachments/assets/392022ce-3acd-493a-ac07-6d4226263f6e)
+
 
 
 
