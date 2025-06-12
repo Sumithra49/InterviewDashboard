@@ -1,6 +1,6 @@
 # JobConnect - Real-time Interview Platform
 
-A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and  for seamless communication between applicants and recruiters.
+A modern job platform that enables instant interview requests with real-time notifications. Built with React, Express, MongoDB, and Socket.IO for seamless communication between applicants and recruiters.
  # Deployment link:
 
  - Frontend:https://interview-dashboard-ez5x.vercel.app/
